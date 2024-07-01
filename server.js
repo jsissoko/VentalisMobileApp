@@ -51,6 +51,18 @@ app.post('/login', (req, res) => {
   });
 });
 
+// Ajouter un nouvel endpoint pour récupérer les commandes
+app.get('/orders', (req, res) => {
+  const query = 'SELECT * FROM commandes';
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send({ message: 'Erreur du serveur', error: err });
+    }
+
+    res.send({ orders: results });
+  });
+});
+
 app.listen(3000, () => {
   console.log('Serveur démarré sur le port 3000');
 });

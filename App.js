@@ -15,7 +15,7 @@ const App = () => {
       <Stack.Navigator>
         {isAuthenticated ? (
           <>
-            <Stack.Screen name="Home" component={BottomTabNavigator} />
+            <Stack.Screen name="Ventalis" component={BottomTabNavigator} />
           </>
         ) : (
           <Stack.Screen name="Login">
