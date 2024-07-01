@@ -1,11 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import LoginScreen from './src/screens/LoginScreen';
+import HomeScreen from './src/screens/HomeScreen';
 import BottomTabNavigator from './src/navigation/BottomTabNavigator';
 
+const Stack = createStackNavigator();
+
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   return (
     <NavigationContainer>
-      <BottomTabNavigator />
+      <Stack.Navigator>
+        {isAuthenticated ? (
+          <>
+            <Stack.Screen name="Home" component={BottomTabNavigator} />
+          </>
+        ) : (
+          <Stack.Screen name="Login">
+            {(props) => <LoginScreen {...props} setIsAuthenticated={setIsAuthenticated} />}
+          </Stack.Screen>
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

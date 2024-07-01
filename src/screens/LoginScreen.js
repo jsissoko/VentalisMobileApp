@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import axios from 'axios';
 
-const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
+const LoginScreen = ({ navigation, setIsAuthenticated }) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // Pour l'instant, nous n'avons pas encore de backend, donc nous simulons une connexion réussie
-    if (username === 'user' && password === 'password') {
-      navigation.replace('BottomTabNavigator'); // Remplace la route actuelle avec la navigation principale
-    } else {
-      alert('Nom d\'utilisateur ou mot de passe incorrect');
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/login', {
+        email,
+        password,
+      });
+
+      if (response.data.user) {
+        setIsAuthenticated(true);
+        navigation.navigate('Home'); // Naviguer vers l'écran d'accueil après une connexion réussie
+      } else {
+        alert('Email ou mot de passe incorrect');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Erreur lors de la connexion');
     }
   };
 
@@ -19,9 +30,9 @@ const LoginScreen = ({ navigation }) => {
       <Text style={styles.title}>Connexion</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nom d'utilisateur"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}
