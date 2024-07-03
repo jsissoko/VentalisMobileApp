@@ -7,8 +7,22 @@ import HomeScreen from '../screens/HomeScreen';
 import AdvisorsScreen from '../screens/AdvisorsScreen';
 import OrdersScreen from '../screens/OrdersScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import { createStackNavigator } from '@react-navigation/stack';
+import OrderDetailsScreen from '../screens/OrderDetailsScreen';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const OrdersStack = ({ userId }) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Orders">
+        {props => <OrdersScreen {...props} userId={userId} />}
+      </Stack.Screen>
+      <Stack.Screen name="OrderDetails" component={OrderDetailsScreen} />
+    </Stack.Navigator>
+  );
+};
 
 const BottomTabNavigator = ({ userId }) => {
   return (
@@ -38,7 +52,7 @@ const BottomTabNavigator = ({ userId }) => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Advisors" component={AdvisorsScreen} />
       <Tab.Screen name="Orders">
-        {props => <OrdersScreen {...props} userId={userId} />}
+        {props => <OrdersStack {...props} userId={userId} />}
       </Tab.Screen>
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
