@@ -1,14 +1,17 @@
+// src/screens/OrdersScreen.js
+
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
-const OrdersScreen = ({ userId }) => {
+const OrdersScreen = ({ navigation, userId }) => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/orders?userId=${userId}`);
+        console.log('Orders response:', response.data);
         setOrders(response.data.orders);
       } catch (error) {
         console.error(error);
@@ -22,11 +25,15 @@ const OrdersScreen = ({ userId }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Mes Commandes</Text>
       {orders.map(order => (
-        <View key={order.id} style={styles.order}>
-          <Text>{order.description}</Text>
-          <Text>{order.date}</Text>
-          <Text>{order.status}</Text>
-        </View>
+        <TouchableOpacity
+          key={order.id}
+          style={styles.order}
+          onPress={() => navigation.navigate('OrderDetails', { orderId: order.id })}
+        >
+          <Text>Description: {order.description}</Text>
+          <Text>Date: {order.date}</Text>
+          <Text>Status: {order.status}</Text>
+        </TouchableOpacity>
       ))}
     </ScrollView>
   );
@@ -35,8 +42,6 @@ const OrdersScreen = ({ userId }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 16,
   },
   title: {

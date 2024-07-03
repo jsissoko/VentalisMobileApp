@@ -1,3 +1,5 @@
+// src/screens/LoginScreen.js
+
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
@@ -13,10 +15,12 @@ const LoginScreen = ({ navigation, setIsAuthenticated, setUserId }) => {
         password,
       });
 
+      console.log('Login response:', response.data);
+
       if (response.data.userId) {
         setUserId(response.data.userId); // Stockez l'ID de l'utilisateur
         setIsAuthenticated(true);
-        navigation.navigate('Orders', { userId: response.data.userId }); // Naviguer vers l'écran des commandes après connexion réussie
+        navigation.navigate('Orders'); // Naviguer vers l'écran des commandes après connexion réussie
       } else {
         alert('Email ou mot de passe incorrect');
       }
