@@ -103,3 +103,26 @@ app.get('/order/:id', (req, res) => {
 app.listen(3000, () => {
   console.log('Serveur démarré sur le port 3000');
 });
+
+
+// Route pour récupérer les informations de l'utilisateur connecté
+app.get('/user', (req, res) => {
+  const userId = req.query.userId; // Récupère l'ID utilisateur de la requête
+
+  if (!userId) {
+    return res.status(400).send({ message: 'ID utilisateur requis' });
+  }
+
+  const query = 'SELECT * FROM utilisateur WHERE id = ?';
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send({ message: 'Erreur du serveur', error: err });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send({ message: 'Utilisateur non trouvé' });
+    }
+
+    res.send({ user: results[0] });
+  });
+});

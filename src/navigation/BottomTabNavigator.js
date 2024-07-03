@@ -54,7 +54,9 @@ const BottomTabNavigator = ({ userId }) => {
       <Tab.Screen name="Orders">
         {props => <OrdersStack {...props} userId={userId} />}
       </Tab.Screen>
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile">
+        {props => <ProfileScreen {...props} userId={userId} />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };
