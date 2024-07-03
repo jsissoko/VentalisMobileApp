@@ -1,12 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
-const bcrypt = require('bcryptjs'); // Utilisation de bcrypt pour le hachage des mots de passe
-const cors = require('cors'); // Importer le middleware cors
+const bcrypt = require('bcryptjs');
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors()); // Utiliser le middleware cors pour permettre les requêtes cross-origin
+app.use(cors()); // Ajoutez cette ligne pour gérer les problèmes CORS
 
 const db = mysql.createConnection({
   host: 'localhost',
@@ -23,6 +23,7 @@ db.connect(err => {
   console.log('Connecté à la base de données MySQL');
 });
 
+// Route de connexion
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
   
@@ -47,14 +48,20 @@ app.post('/login', (req, res) => {
       return res.status(401).send({ message: 'Email ou mot de passe incorrect' });
     }
 
-    res.send({ user });
+    res.send({ userId: user.id });
   });
 });
 
-// Ajouter un nouvel endpoint pour récupérer les commandes
+// Route pour récupérer les commandes de l'utilisateur connecté
 app.get('/orders', (req, res) => {
-  const query = 'SELECT * FROM commandes';
-  db.query(query, (err, results) => {
+  const userId = req.query.userId; // Récupère l'ID utilisateur de la requête
+
+  if (!userId) {
+    return res.status(400).send({ message: 'ID utilisateur requis' });
+  }
+
+  const query = 'SELECT * FROM commandes WHERE utilisateur_id = ?'; // Utilisation de l'ID utilisateur pour filtrer les commandes
+  db.query(query, [userId], (err, results) => {
     if (err) {
       return res.status(500).send({ message: 'Erreur du serveur', error: err });
     }
