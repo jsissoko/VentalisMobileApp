@@ -10,7 +10,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({ userId }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -37,7 +37,9 @@ const BottomTabNavigator = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Advisors" component={AdvisorsScreen} />
-      <Tab.Screen name="Orders" component={OrdersScreen} />
+      <Tab.Screen name="Orders">
+        {props => <OrdersScreen {...props} userId={userId} />}
+      </Tab.Screen>
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
