@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import axios from 'axios';
 
 const OrdersScreen = ({ userId }) => {
@@ -19,7 +19,7 @@ const OrdersScreen = ({ userId }) => {
   }, [userId]);
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Mes Commandes</Text>
       {orders.map(order => (
         <View key={order.id} style={styles.order}>
@@ -28,7 +28,7 @@ const OrdersScreen = ({ userId }) => {
           <Text>{order.status}</Text>
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
 
-const LoginScreen = ({ navigation, setIsAuthenticated }) => {
+const LoginScreen = ({ navigation, setIsAuthenticated, setUserId }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,9 +13,10 @@ const LoginScreen = ({ navigation, setIsAuthenticated }) => {
         password,
       });
 
-      if (response.data.user) {
+      if (response.data.userId) {
+        setUserId(response.data.userId); // Stockez l'ID de l'utilisateur
         setIsAuthenticated(true);
-        navigation.navigate('Home'); // Naviguer vers l'écran d'accueil après une connexion réussie
+        navigation.navigate('Orders', { userId: response.data.userId }); // Naviguer vers l'écran des commandes après connexion réussie
       } else {
         alert('Email ou mot de passe incorrect');
       }
