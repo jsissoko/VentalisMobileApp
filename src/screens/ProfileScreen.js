@@ -1,47 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+// ProfileScreen.js
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import axios from 'axios';
 
 const ProfileScreen = ({ userId }) => {
-  const [userDetails, setUserDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/user?userId=${userId}`);
-        setUserDetails(response.data.user);
+        setUser(response.data.user);
       } catch (error) {
         console.error('Error fetching user details:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchUserDetails();
   }, [userId]);
 
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+  if (!user) {
+    return <Text>Chargement...</Text>;
   }
 
   return (
     <View style={styles.container}>
-      {userDetails ? (
-        <>
-          <Text style={styles.title}>Mon Profil</Text>
-          <Text>Prénom: {userDetails.prenom}</Text>
-          <Text>Nom: {userDetails.nom}</Text>
-          <Text>Email: {userDetails.email}</Text>
-          <Text>Pays: {userDetails.pays}</Text>
-          <Text>Ville: {userDetails.ville}</Text>
-          <Text>Nom Rue: {userDetails.nom_rue}</Text>
-          <Text>Numéro Rue: {userDetails.numero_rue}</Text>
-          <Text>Téléphone: {userDetails.telephone}</Text>
-        </>
-      ) : (
-        <Text>Utilisateur non trouvé</Text>
-      )}
+      <Text style={styles.title}>Profil</Text>
+      <Text>Nom: {user.nom}</Text>
+      <Text>Email: {user.email}</Text>
+      <Text>Prénom: {user.prenom}</Text>
+      <Text>Ville: {user.ville}</Text>
+      <Text>Pays: {user.pays}</Text>
     </View>
   );
 };
@@ -49,12 +38,13 @@ const ProfileScreen = ({ userId }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 16,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 24,
   },
 });
 

@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './src/screens/LoginScreen';
-import BottomTabNavigator from './src/navigation/BottomTabNavigator'; // Assurez-vous que ce chemin est correct
+import OrdersScreen from './src/screens/OrdersScreen';
+import OrderDetailsScreen from './src/screens/OrderDetailsScreen';
+import BottomTabNavigator from './src/navigation/BottomTabNavigator';
 
 const Stack = createStackNavigator();
 
@@ -18,9 +20,12 @@ const App = () => {
             {props => <LoginScreen {...props} setIsAuthenticated={setIsAuthenticated} setUserId={setUserId} />}
           </Stack.Screen>
         ) : (
-          <Stack.Screen name="Home">
-            {props => <BottomTabNavigator {...props} userId={userId} />}
-          </Stack.Screen>
+          <>
+            <Stack.Screen name="BottomTabs">
+              {props => <BottomTabNavigator {...props} userId={userId} />}
+            </Stack.Screen>
+            <Stack.Screen name="OrderDetails" component={OrderDetailsScreen} />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>

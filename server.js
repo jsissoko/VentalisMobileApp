@@ -6,13 +6,13 @@ const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors()); // Pour gérer les problèmes CORS
 
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
-  database: 'cda1512'
+  password: '', // Remplacez par votre mot de passe
+  database: 'cda1512' // Nom de votre base de données
 });
 
 db.connect(err => {
@@ -54,13 +54,13 @@ app.post('/login', (req, res) => {
 
 // Route pour récupérer les commandes de l'utilisateur connecté
 app.get('/orders', (req, res) => {
-  const userId = req.query.userId;
+  const userId = req.query.userId; // Récupère l'ID utilisateur de la requête
 
   if (!userId) {
     return res.status(400).send({ message: 'ID utilisateur requis' });
   }
 
-  const query = 'SELECT * FROM commandes WHERE utilisateur_id = ?';
+  const query = 'SELECT * FROM commandes WHERE utilisateur_id = ?'; // Utilisation de l'ID utilisateur pour filtrer les commandes
   db.query(query, [userId], (err, results) => {
     if (err) {
       return res.status(500).send({ message: 'Erreur du serveur', error: err });
@@ -75,17 +75,11 @@ app.get('/order/:id', (req, res) => {
   const orderId = req.params.id;
 
   const query = `
-    SELECT 
-      c.id, c.date, c.status, c.total, c.pays, c.ville, c.code_postal, c.nom_rue, c.numero_rue, c.utilisateur_id, c.informations_sup, c.matricule_cmd,
-      cl.quantite, cl.prix, p.nom AS produit_nom
-    FROM 
-      commandes c
-    JOIN 
-      commande_ligne cl ON c.id = cl.commande_id
-    JOIN 
-      produit p ON cl.produit_id = p.id
-    WHERE 
-      c.id = ?
+    SELECT c.*, cl.*, p.* 
+    FROM commandes c 
+    JOIN commande_ligne cl ON c.id = cl.commande_id 
+    JOIN produit p ON cl.produit_id = p.id 
+    WHERE c.id = ?
   `;
   db.query(query, [orderId], (err, results) => {
     if (err) {
@@ -100,14 +94,9 @@ app.get('/order/:id', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Serveur démarré sur le port 3000');
-});
-
-
-// Route pour récupérer les informations de l'utilisateur connecté
 app.get('/user', (req, res) => {
   const userId = req.query.userId; // Récupère l'ID utilisateur de la requête
+  console.log(`Requête pour récupérer les détails de l'utilisateur avec l'ID: ${userId}`);
 
   if (!userId) {
     return res.status(400).send({ message: 'ID utilisateur requis' });
@@ -116,13 +105,89 @@ app.get('/user', (req, res) => {
   const query = 'SELECT * FROM utilisateur WHERE id = ?';
   db.query(query, [userId], (err, results) => {
     if (err) {
+      console.error('Erreur lors de la requête à la base de données:', err);
       return res.status(500).send({ message: 'Erreur du serveur', error: err });
     }
 
     if (results.length === 0) {
+      console.log('Utilisateur non trouvé');
       return res.status(404).send({ message: 'Utilisateur non trouvé' });
     }
 
+    console.log('Utilisateur trouvé:', results[0]);
     res.send({ user: results[0] });
   });
+});
+
+
+// Route pour récupérer les messages de l'utilisateur connecté
+app.get('/messages', (req, res) => {
+  const userId = req.query.userId; // Récupère l'ID utilisateur de la requête
+
+  if (!userId) {
+    return res.status(400).send({ message: 'ID utilisateur requis' });
+  }
+  const query = `
+    SELECT m.*, ue.nom AS expediteur_nom, ud.nom AS destinataire_nom 
+    FROM messages m 
+    JOIN utilisateur ue ON m.expediteur_id = ue.id 
+    JOIN utilisateur ud ON m.destinataire_id = ud.id 
+    WHERE m.expediteur_id = ? OR m.destinataire_id = ? 
+    ORDER BY m.created_at ASC
+  `;
+
+  db.query(query, [userId, userId], (err, results) => {
+    if (err) {
+      return res.status(500).send({ message: 'Erreur du serveur', error: err });
+    }
+
+    res.send({ messages: results });
+  });
+});
+
+
+
+app.post('/messages', (req, res) => {
+  const { expediteur_id, title, message } = req.body;
+
+  if (!expediteur_id || !message || !title) {
+    return res.status(400).send({ message: 'Toutes les informations sont requises' });
+  }
+
+  console.log('Reçu:', { expediteur_id, title, message }); // Vérifiez les données reçues
+
+  // Récupérer employe_id de l'utilisateur connecté
+  const userQuery = 'SELECT employe_id FROM utilisateur WHERE id = ?';
+  db.query(userQuery, [expediteur_id], (err, userResults) => {
+    if (err) {
+      console.error('Erreur lors de la récupération de employe_id:', err); // Log pour le débogage
+      return res.status(500).send({ message: 'Erreur du serveur', error: err });
+    }
+
+    if (userResults.length === 0) {
+      return res.status(404).send({ message: 'Utilisateur non trouvé' });
+    }
+
+    const destinataire_id = userResults[0].employe_id;
+
+    console.log('employe_id récupéré:', destinataire_id); // Vérifiez le destinataire_id
+
+    if (!destinataire_id) {
+      return res.status(400).send({ message: "L'utilisateur n'a pas d'employé assigné" });
+    }
+
+    const messageQuery = 'INSERT INTO messages (expediteur_id, destinataire_id, title, message, created_at, is_read) VALUES (?, ?, ?, ?, NOW(), 0)';
+    db.query(messageQuery, [expediteur_id, destinataire_id, title, message], (err, results) => {
+      if (err) {
+        console.error('Erreur lors de l\'insertion du message:', err); // Log pour le débogage
+        return res.status(500).send({ message: 'Erreur du serveur', error: err });
+      }
+
+      res.send({ message: 'Message envoyé avec succès' });
+    });
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Serveur démarré sur le port 3000');
 });
