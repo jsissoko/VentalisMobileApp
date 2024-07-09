@@ -1,29 +1,18 @@
+// src/screens/HomeScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
+import theme from '../theme';
 
 const HomeScreen = () => {
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Bienvenue à Ventalis</Text>
-        <Text style={styles.description}>
-          Vous êtes dans votre espace abonné. Ici, vous pouvez accéder à vos commandes, consulter vos informations personnelles et contacter nos conseillers.
-        </Text>
-      </View>
-      <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/300' }}
-          style={styles.image}
-        />
-        <Image
-          source={{ uri: 'https://via.placeholder.com/300' }}
-          style={styles.image}
-        />
-        <Image
-          source={{ uri: 'https://via.placeholder.com/300' }}
-          style={styles.image}
-        />
-      </View>
+      <Text style={styles.welcomeText}>Bienvenue à Ventalis</Text>
+      <Text style={styles.infoText}>
+        Vous êtes dans votre espace abonné. Ici, vous pouvez accéder à vos commandes, consulter les messages de vos conseillers, et bien plus encore.
+      </Text>
+      <Image style={styles.image} source={{ uri: 'https://via.placeholder.com/150' }} />
+      <Image style={styles.image} source={{ uri: 'https://via.placeholder.com/150' }} />
+      <Image style={styles.image} source={{ uri: 'https://via.placeholder.com/150' }} />
     </ScrollView>
   );
 };
@@ -31,33 +20,25 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f9f9f9',
+    padding: theme.spacing.medium,
+    backgroundColor: theme.colors.secondary,
   },
-  header: {
-    marginBottom: 20,
-    alignItems: 'center',
+  welcomeText: {
+    fontSize: theme.fontSize.large,
+    color: theme.colors.primary,
+    marginBottom: theme.spacing.large,
+    fontFamily: theme.fonts.cursiveAlt,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  description: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#666',
-  },
-  imageContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
+  infoText: {
+    fontSize: theme.fontSize.medium,
+    color: theme.colors.black,
+    marginBottom: theme.spacing.medium,
+    fontFamily: theme.fonts.serif,
   },
   image: {
     width: '100%',
-    height: 200,
-    marginBottom: 10,
-    borderRadius: 10,
+    height: 150,
+    marginBottom: theme.spacing.medium,
   },
 });
 

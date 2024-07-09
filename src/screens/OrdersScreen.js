@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import theme from '../theme';
 
 const OrdersScreen = ({ navigation, userId }) => {
   const [orders, setOrders] = useState([]);
@@ -30,9 +31,9 @@ const OrdersScreen = ({ navigation, userId }) => {
           style={styles.order}
           onPress={() => navigation.navigate('OrderDetails', { orderId: order.id })}
         >
-          <Text>Description: {order.description}</Text>
-          <Text>Date: {order.date}</Text>
-          <Text>Status: {order.status}</Text>
+          <Text style={styles.orderText}>Description: {order.description}</Text>
+          <Text style={styles.orderText}>Date: {order.date}</Text>
+          <Text style={styles.orderText}>Status: {order.status}</Text>
         </TouchableOpacity>
       ))}
     </ScrollView>
@@ -42,19 +43,28 @@ const OrdersScreen = ({ navigation, userId }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: theme.spacing.medium,
+    backgroundColor: theme.colors.secondary,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 24,
+    fontSize: theme.fontSize.large,
+    marginBottom: theme.spacing.large,
+    color: theme.colors.primary,
+    fontFamily: theme.fonts.cursive,
   },
   order: {
     width: '100%',
-    padding: 16,
-    marginVertical: 8,
+    padding: theme.spacing.medium,
+    marginVertical: theme.spacing.small,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: theme.colors.primary,
     borderRadius: 4,
+    backgroundColor: theme.colors.secondary,
+  },
+  orderText: {
+    fontSize: theme.fontSize.medium,
+    color: theme.colors.black,
+    fontFamily: theme.fonts.serif,
   },
 });
 

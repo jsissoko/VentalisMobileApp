@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import axios from 'axios';
+import theme from '../theme';  // Assurez-vous que ce chemin est correct
 
 const OrderDetailsScreen = ({ route }) => {
   const { orderId } = route.params;
@@ -23,7 +24,7 @@ const OrderDetailsScreen = ({ route }) => {
   }, [orderId]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <ActivityIndicator size="large" color={theme.colors.primary} />;
   }
 
   return (
@@ -31,28 +32,28 @@ const OrderDetailsScreen = ({ route }) => {
       {orderDetails ? (
         <>
           <Text style={styles.title}>Détails de la commande</Text>
-          <Text>ID: {orderDetails[0].id}</Text>
-          <Text>Date: {orderDetails[0].date}</Text>
-          <Text>Status: {orderDetails[0].status}</Text>
-          <Text>Total: {orderDetails[0].total}</Text>
-          <Text>Pays: {orderDetails[0].pays}</Text>
-          <Text>Ville: {orderDetails[0].ville}</Text>
-          <Text>Code Postal: {orderDetails[0].code_postal}</Text>
-          <Text>Nom Rue: {orderDetails[0].nom_rue}</Text>
-          <Text>Numéro Rue: {orderDetails[0].numero_rue}</Text>
-          <Text>Informations Supplémentaires: {orderDetails[0].informations_sup}</Text>
-          <Text>Matricule Commande: {orderDetails[0].matricule_cmd}</Text>
+          <Text style={styles.text}>ID: {orderDetails[0].id}</Text>
+          <Text style={styles.text}>Date: {orderDetails[0].date}</Text>
+          <Text style={styles.text}>Status: {orderDetails[0].status}</Text>
+          <Text style={styles.text}>Total: {orderDetails[0].total}</Text>
+          <Text style={styles.text}>Pays: {orderDetails[0].pays}</Text>
+          <Text style={styles.text}>Ville: {orderDetails[0].ville}</Text>
+          <Text style={styles.text}>Code Postal: {orderDetails[0].code_postal}</Text>
+          <Text style={styles.text}>Nom Rue: {orderDetails[0].nom_rue}</Text>
+          <Text style={styles.text}>Numéro Rue: {orderDetails[0].numero_rue}</Text>
+          <Text style={styles.text}>Informations Supplémentaires: {orderDetails[0].informations_sup}</Text>
+          <Text style={styles.text}>Matricule Commande: {orderDetails[0].matricule_cmd}</Text>
           <Text style={styles.title}>Produits</Text>
           {orderDetails.map((item, index) => (
             <View key={index} style={styles.product}>
-              <Text>Produit: {item.produit_nom}</Text>
-              <Text>Quantité: {item.quantite}</Text>
-              <Text>Prix: {item.prix}</Text>
+              <Text style={styles.text}>Produit: {item.produit_nom}</Text>
+              <Text style={styles.text}>Quantité: {item.quantite}</Text>
+              <Text style={styles.text}>Prix: {item.prix}</Text>
             </View>
           ))}
         </>
       ) : (
-        <Text>Commande non trouvée</Text>
+        <Text style={styles.text}>Commande non trouvée</Text>
       )}
     </View>
   );
@@ -61,19 +62,29 @@ const OrderDetailsScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: theme.spacing.medium,
+    backgroundColor: theme.colors.secondary,
   },
   title: {
-    fontSize: 24,
+    fontSize: theme.fontSize.large,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: theme.spacing.medium,
+    color: theme.colors.primary,
+    fontFamily: theme.fonts.cursive,
+  },
+  text: {
+    fontSize: theme.fontSize.medium,
+    color: theme.colors.black,
+    fontFamily: theme.fonts.serif,
+    marginBottom: theme.spacing.small,
   },
   product: {
-    marginTop: 16,
-    padding: 16,
+    marginTop: theme.spacing.medium,
+    padding: theme.spacing.medium,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: theme.colors.primary,
     borderRadius: 8,
+    backgroundColor: theme.colors.secondary,
   },
 });
 

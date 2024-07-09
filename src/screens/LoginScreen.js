@@ -1,8 +1,8 @@
 // src/screens/LoginScreen.js
-
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
+import theme from '../theme';
 
 const LoginScreen = ({ navigation, setIsAuthenticated, setUserId }) => {
   const [email, setEmail] = useState('');
@@ -15,12 +15,10 @@ const LoginScreen = ({ navigation, setIsAuthenticated, setUserId }) => {
         password,
       });
 
-      console.log('Login response:', response.data);
-
       if (response.data.userId) {
-        setUserId(response.data.userId); // Stockez l'ID de l'utilisateur
+        setUserId(response.data.userId);
         setIsAuthenticated(true);
-        navigation.navigate('Orders'); // Naviguer vers l'écran des commandes après connexion réussie
+        navigation.navigate('Orders');
       } else {
         alert('Email ou mot de passe incorrect');
       }
@@ -46,7 +44,7 @@ const LoginScreen = ({ navigation, setIsAuthenticated, setUserId }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Se connecter" onPress={handleLogin} />
+      <Button title="Se connecter" onPress={handleLogin} color={theme.colors.accent} />
     </View>
   );
 };
@@ -56,19 +54,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    padding: theme.spacing.medium,
+    backgroundColor: theme.colors.secondary,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 24,
+    fontSize: theme.fontSize.large,
+    color: theme.colors.primary,
+    marginBottom: theme.spacing.large,
+    fontFamily: theme.fonts.cursive,
   },
   input: {
     width: '100%',
-    padding: 8,
-    marginVertical: 8,
+    padding: theme.spacing.small,
+    marginVertical: theme.spacing.small,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: theme.colors.primary,
     borderRadius: 4,
+    backgroundColor: theme.colors.secondary,
   },
 });
 

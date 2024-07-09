@@ -11,8 +11,8 @@ app.use(cors()); // Pour gérer les problèmes CORS
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '', // Remplacez par votre mot de passe
-  database: 'cda1512' // Nom de votre base de données
+  password: '', // VIDE sur xampp
+  database: 'cda1512' // Nom de ma base de données
 });
 
 db.connect(err => {
@@ -23,12 +23,25 @@ db.connect(err => {
   console.log('Connecté à la base de données MySQL');
 });
 
+
 // Route de connexion
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
+  // Validation des entrées
   if (!email || !password) {
     return res.status(400).send({ message: 'Email et mot de passe requis' });
+  }
+
+  // Vérifier que l'email a un format valide
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).send({ message: 'Email invalide' });
+  }
+
+  // Vérifier que le mot de passe respecte une certaine complexité (par exemple, au moins 8 caractères)
+  if (password.length < 8) {
+    return res.status(400).send({ message: 'Le mot de passe doit contenir au moins 8 caractères' });
   }
 
   const query = 'SELECT * FROM utilisateur WHERE email = ?';
@@ -51,6 +64,7 @@ app.post('/login', (req, res) => {
     res.send({ userId: user.id });
   });
 });
+
 
 // Route pour récupérer les commandes de l'utilisateur connecté
 app.get('/orders', (req, res) => {
