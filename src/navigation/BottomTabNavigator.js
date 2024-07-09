@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import HomeScreen from '../screens/HomeScreen';
 import AdvisorsScreen from '../screens/AdvisorsScreen';
 import OrdersScreen from '../screens/OrdersScreen';
@@ -8,12 +9,13 @@ import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator = ({ userId }) => {
+const BottomTabNavigator = ({ userId, onLogout }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
+
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Advisors') {
@@ -23,6 +25,7 @@ const BottomTabNavigator = ({ userId }) => {
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
           }
+
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
@@ -41,7 +44,7 @@ const BottomTabNavigator = ({ userId }) => {
         {props => <OrdersScreen {...props} userId={userId} />}
       </Tab.Screen>
       <Tab.Screen name="Profile">
-        {props => <ProfileScreen {...props} userId={userId} />}
+        {props => <ProfileScreen {...props} userId={userId} onLogout={onLogout} />}
       </Tab.Screen>
     </Tab.Navigator>
   );
